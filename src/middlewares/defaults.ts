@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from 'express';
 
 interface AppResponse {
     success: true;
-    data: AppObject;
+    data?: AppObject;
 }
 
 interface AppError {
@@ -16,24 +16,36 @@ interface AppObject {
 
 interface ErrorObject {
     code: string;
-    [key: string]: any;
+    [key: string]: object | string;
 }
 
 export class DefaultResponse {
-    constructor(public status: number, public response: AppResponse) { }
+    public status: number;
+    public response: AppResponse;
+
+    public constructor(status: number, response: AppResponse) {
+        this.status = status;
+        this.response = response;
+    }
 }
 
 export class DefaultError {
-    constructor(public status: number, public response: AppError) {}
+    public status: number;
+    public response: AppError;
+
+    public constructor(status: number, response: AppError) {
+        this.status = status;
+        this.response = response;
+    }
 }
 
-export function responseHandler(obj: any, req: Request, res: Response, next: NextFunction) {
+export function responseHandler(obj: object, req: Request, res: Response): void {
     // (response | error) object
     if (obj instanceof DefaultResponse || obj instanceof DefaultError) {
-        res.status(obj.status).send(obj.response)
+        res.status(obj.status).send(obj.response);
     } else {
         // unhandled object
         console.error(obj);
-        res.status(500).send({success: false, data: { code: "internal_error" }})
+        res.status(500).send({ success: false, data: { code: 'internal_error' } });
     }
 }

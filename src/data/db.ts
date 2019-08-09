@@ -1,6 +1,6 @@
-export function getUser(id: number) {
+export function getUser(id: number): object | null {
     if (id === 1) {
-        return { fullName: "Kareem G. Diab" }
+        return { fullName: 'Kareem G. Diab' };
     } else {
         return null;
     }
